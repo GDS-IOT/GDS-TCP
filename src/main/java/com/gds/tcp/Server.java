@@ -20,7 +20,7 @@ public class Server {
         System.out.println("Server Started");
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(10008);
+            serverSocket = new ServerSocket(1045);
             Socket client =  serverSocket.accept();
             BufferedReader fromClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter toClient = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
