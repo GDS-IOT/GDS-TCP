@@ -16,27 +16,48 @@ import java.net.Socket;
  */
 public class Server {
 
-    public static void main(String []args) {
-        System.out.println("Server Started");
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(1045);
-            Socket client =  serverSocket.accept();
-            BufferedReader fromClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            BufferedWriter toClient = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-            String fromMsg = fromClient.readLine();
-            String toMsg = "";
-            while(null != fromMsg && !"".equals(fromMsg)) {
-                toMsg = "Message Received :: ".concat(fromMsg);
-                toClient.write(toMsg);
-                toClient.newLine();
-                toClient.flush();
-                fromMsg = fromClient.readLine();
+    public static void main(String []args) throws IOException, InterruptedException {
+        while(true) {
+            System.out.println("Server Started");
+            ServerSocket serverSocket = null;
+            Socket client = null;
+            try {
+                serverSocket = new ServerSocket(1045);
+                client = serverSocket.accept();
+                BufferedReader fromClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                BufferedWriter toClient = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+                String fromMsg = fromClient.readLine();
+                String toMsg = "";
+                while (true) {
+                    if (null == fromMsg)
+                        fromMsg = "null";
+                    toMsg = "Message Received :: ".concat(fromMsg);
+                    toClient.write(toMsg);
+                    toClient.newLine();
+                    toClient.flush();
+                    fromMsg = fromClient.readLine();
+                    if(null == fromMsg){
+                        System.out.println("Message is null");
+                        client.close();
+                        serverSocket.close();
+                        break;
+                    }
+                }
+            } catch (IOException ie) {
+                ie.printStackTrace();
+                if (null != client) {
+                    client.close();
+                    serverSocket.close();
+                }
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (null != client) {
+                    client.close();
+                    serverSocket.close();
+                }
+                Thread.sleep(1000);
             }
-        }catch(IOException ie) {
-            ie.printStackTrace();
-        }catch(Exception e) {
-            e.printStackTrace();
         }
     }
 }
