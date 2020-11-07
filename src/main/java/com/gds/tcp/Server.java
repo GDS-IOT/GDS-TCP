@@ -32,6 +32,7 @@ public class Server {
                     if (null == fromMsg)
                         fromMsg = "null";
                     toMsg = "Message Received :: ".concat(fromMsg);
+                    System.out.println(toMsg);
                     toClient.write(toMsg);
                     toClient.newLine();
                     toClient.flush();
