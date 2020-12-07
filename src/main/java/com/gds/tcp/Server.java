@@ -7,9 +7,11 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Date;
 
 
 /**
@@ -81,9 +83,36 @@ public class Server {
         }
     }
 
-    public static void main(String []args) {
-        viaByte();
+    public static void viaInputStream() throws IOException {
+        int port = 1045;
+        ServerSocket server = new ServerSocket(port);
+        System.out.println("Waiting for client...");
+        Socket client = null;
+        try {
+            while (true) {
+                client = server.accept();
+                System.out.println("Client connected.");
+                OutputStream out = client.getOutputStream();
+                Date date = new Date();
+
+                byte b[] = date.toString().getBytes();
+
+                out.write(b);
+            }
+        }catch(IOException ie) {
+            ie.printStackTrace();
+        }finally {
+            client.close();
+            server.close();
+        }
+
+    }
+
+    public static void main(String []args)throws Exception {
+//		viaByte();
+        viaInputStream();
     }
 
 }
+
 
