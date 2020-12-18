@@ -1,5 +1,6 @@
 package com.gds.tcp.engine;
 
+import com.gds.tcp.engine.service.CommandHandler;
 import org.apache.log4j.Logger;
 
 import io.netty.channel.Channel;
@@ -52,7 +53,7 @@ public class ByteServerHandler extends ChannelInboundHandlerAdapter {
         byte[] resp = new byte[2];
         resp[0] = 2;
         resp[1] = 100;
-        ctx.channel().writeAndFlush(resp);
+        ctx.channel().writeAndFlush(new CommandHandler().sendDeviceResponse());
         logger.debug("Sent response");
     }
 
