@@ -36,8 +36,23 @@ public class CommandHandler {
     }
 
     public byte[] sendDeviceResponse(){
-        byte []res = new byte[8];
-        res[0] = (byte)0x08;
+        byte []res = new byte[10];
+        res[0] = (byte)0x0A;
+        res[1] = (byte)0xff;
+        res[2] = (byte)0xff;
+        res[3] = (byte)0xff;
+        res[4] = (byte)0xff;
+        res[5] = (byte)0x01;
+        res[6] = (byte)0x11;
+        res[7] = (byte)0x01;
+        res[8] = (byte)0x00;
+        res[9] = (byte)0x00;
+        return res;
+    }
+
+    public byte[] sendDeviceResponse2(){
+        byte []res = new byte[10];
+        res[0] = (byte)0x0A;
         res[1] = (byte)0x01;
         res[2] = (byte)0x06;
         res[3] = (byte)0x00;
@@ -45,6 +60,23 @@ public class CommandHandler {
         res[5] = (byte)0x01;
         res[6] = (byte)0x11;
         res[7] = (byte)0x01;
+        res[8] = (byte)0x00;
+        res[9] = (byte)0x00;
+        return res;
+    }
+
+    public byte[] sendDeviceResponse3(){
+        byte []res = new byte[10];
+        res[0] = (byte)0x0A;
+        res[1] = (byte)0x01;
+        res[2] = (byte)0x05;
+        res[3] = (byte)0x00;
+        res[4] = (byte)0x00;
+        res[5] = (byte)0x01;
+        res[6] = (byte)0x11;
+        res[7] = (byte)0x01;
+        res[8] = (byte)0x00;
+        res[9] = (byte)0x00;
         return res;
     }
 }

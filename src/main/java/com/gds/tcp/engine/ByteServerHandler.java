@@ -29,6 +29,10 @@ public class ByteServerHandler extends ChannelInboundHandlerAdapter {
 //			channel.write("[SERVER] - "+ incoming.remoteAddress() + " has joined ");
 //		}
         channels.add(incoming);
+        CommandHandler ch = new CommandHandler();
+        incoming.writeAndFlush(ch.sendDeviceResponse());
+        incoming.writeAndFlush(ch.sendDeviceResponse2());
+        incoming.writeAndFlush(ch.sendDeviceResponse3());
     }
 
     @Override
