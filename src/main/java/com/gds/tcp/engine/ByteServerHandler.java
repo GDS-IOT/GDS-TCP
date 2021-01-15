@@ -30,6 +30,7 @@ public class ByteServerHandler extends ChannelInboundHandlerAdapter {
 //		}
         channels.add(incoming);
         CommandHandler ch = new CommandHandler();
+        Thread.sleep(10000);
         incoming.writeAndFlush(ch.sendDeviceResponse());
 //        incoming.writeAndFlush(ch.sendDeviceResponse2());
 //        incoming.writeAndFlush(ch.sendDeviceResponse3());
