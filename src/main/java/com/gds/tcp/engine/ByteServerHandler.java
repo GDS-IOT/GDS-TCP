@@ -53,7 +53,7 @@ public class ByteServerHandler extends ChannelInboundHandlerAdapter {
         logger.debug("Message Received");
         byte []bb = (byte[]) msg;
         for (byte b : bb) {
-            logger.debug((char) b + " -- ");
+            logger.debug((int) b + " -- ");
         }
         byte[] resp = new byte[2];
         resp[0] = 2;
