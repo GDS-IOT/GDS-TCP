@@ -1,6 +1,7 @@
 package com.gds.tcp.engine.netty;
 
 import com.gds.tcp.engine.service.CommandHandler;
+import com.gds.tcp.engine.service.MessageHandler;
 import org.apache.log4j.Logger;
 
 import io.netty.channel.Channel;
@@ -48,18 +49,26 @@ public class ByteServerHandler extends ChannelInboundHandlerAdapter {
         logger.debug("Exception occurred ",cause);
     }
 
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.debug("Message Received");
-        byte []bb = (byte[]) msg;
-        for (byte b : bb) {
-            logger.debug((int) b + " -- ");
-        }
-        byte[] resp = new byte[2];
-
-        resp[1] = 100;
-//        ctx.channel().writeAndFlush(new CommandHandler().sendDeviceResponse());
+        MessageHandler.getInstance().handleNext(msg);
         logger.debug("Sent response");
     }
+
+//    @Override
+//    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+//        logger.debug("Message Received");
+//        byte []bb = (byte[]) msg;
+//        for (byte b : bb) {
+//            logger.debug((int) b + " -- ");
+//        }
+//        byte[] resp = new byte[2];
+//
+//        resp[1] = 100;
+////        ctx.channel().writeAndFlush(new CommandHandler().sendDeviceResponse());
+//        logger.debug("Sent response");
+//    }
 
 }
