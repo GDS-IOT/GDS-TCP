@@ -58,7 +58,7 @@ public class ByteServerHandler extends ChannelInboundHandlerAdapter {
         byte[] resp = new byte[2];
         resp[0] = 2;
         resp[1] = 100;
-        ctx.channel().writeAndFlush(new CommandHandler().sendDeviceResponse());
+//        ctx.channel().writeAndFlush(new CommandHandler().sendDeviceResponse());
         logger.debug("Sent response");
     }
 
