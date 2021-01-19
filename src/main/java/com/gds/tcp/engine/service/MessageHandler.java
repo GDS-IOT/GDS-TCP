@@ -30,7 +30,7 @@ public class MessageHandler implements GDSHandler {
         if (data instanceof byte[]) {
             byte []rawData = (byte[]) data;
             printRawData(rawData);
-
+            nextHandler.handleNext(data);
         } else if (data instanceof String) {
             LOGGER.debug("Message received from Kafka ".concat((String)data));
         }
