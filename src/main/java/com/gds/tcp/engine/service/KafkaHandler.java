@@ -34,6 +34,7 @@ public class KafkaHandler implements GDSHandler {
 
     @Override
     public void handleNext(Object rawData) {
+        LOGGER.debug("Sending message to Kafka");
         byte[] data = (byte[]) rawData;
         String systemId = getSystemId(data);
         LOGGER.debug("systemId ".concat(systemId));
