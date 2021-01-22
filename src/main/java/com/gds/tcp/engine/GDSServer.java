@@ -1,6 +1,8 @@
 package com.gds.tcp.engine;
 
 import com.gds.tcp.engine.exception.GDSException;
+import com.gds.tcp.engine.netty.GDSServerInitializer;
+import com.gds.tcp.engine.utils.GDSUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -25,13 +27,14 @@ public class GDSServer {
         this.port = port;
     }
 
-    public void initLogger() {
+    public void initProperties() {
         PropertyConfigurator.configure(this.getClass().getClassLoader().getResourceAsStream("log4j.properties"));
-        logger.debug("Init Logger - Success");
+        GDSUtils.getInstance().setProperties(this.getClass().getClassLoader().getResourceAsStream("application.properties"));
+        logger.debug("Init Properties - Success");
     }
 
     public void run() {
-        initLogger();
+        initProperties();
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
