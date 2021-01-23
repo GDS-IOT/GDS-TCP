@@ -1,7 +1,7 @@
 package com.gds.tcp.engine.service;
 
+import com.gds.domain.GDSData;
 import com.gds.tcp.engine.constants.GDSConstants;
-import com.gds.tcp.engine.domain.GDSData;
 import com.gds.tcp.engine.utils.GDSSerializer;
 import com.gds.tcp.engine.utils.GDSUtils;
 import org.apache.kafka.clients.Metadata;

@@ -1,4 +1,4 @@
-package com.gds.tcp.engine.domain;
+package com.gds.domain;
 
 public class GDSData {
 

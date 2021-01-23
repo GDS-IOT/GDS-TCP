@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class GDSSerializer<T> implements Serializer<T> {
 
-    private Logger LOGGER = Logger.getLogger(GDSSerializer.class);
+    private static final Logger LOGGER = Logger.getLogger(GDSSerializer.class);
 
     public void configure(Map configs, boolean isKey) {
     }
