@@ -1,6 +1,8 @@
 package com.gds.tcp.engine.service;
 
+import com.gds.domain.GDSData;
 import com.gds.tcp.engine.constants.GDSConstants;
+import com.gds.tcp.engine.utils.GDSSerializer;
 import com.gds.tcp.engine.utils.GDSUtils;
 import org.apache.kafka.clients.Metadata;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -21,6 +23,7 @@ public class KafkaHandler implements GDSHandler {
     private final StringBuilder stringBuilder = new StringBuilder();
 
     private GDSUtils gdsUtils;
+
     private Producer<String, ByteArraySerializer> producer;
 
     private KafkaHandler() {
@@ -37,11 +40,14 @@ public class KafkaHandler implements GDSHandler {
         LOGGER.debug("Sending message to Kafka");
         byte[] data = (byte[]) rawData;
         String systemId = getSystemId(data);
+        GDSData gdsData = new GDSData();
+        gdsData.setGdsData(data);
+        gdsData.setTs(String.valueOf(System.currentTimeMillis()));
         LOGGER.debug("systemId ".concat(systemId));
         ProducerRecord record = new ProducerRecord(
                 gdsUtils.getGDSProperty(GDSConstants.KAFKA_TOPIC_NAME),
                 systemId,
-                rawData
+                gdsData
                 );
         Future<Metadata> futureMedatata = this.producer.send(record);
         while(!futureMedatata.isDone()){}
@@ -56,7 +62,7 @@ public class KafkaHandler implements GDSHandler {
         kafkaProps.put("bootstrap.servers", gdsUtils.getGDSProperty(GDSConstants.KAFKA_BROKER_URL));
         kafkaProps.put("acks", "all");
         kafkaProps.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer"); // Serialization of keys
-        kafkaProps.put("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer"); // Serialization of values
+        kafkaProps.put("value.serializer", GDSSerializer.class.getName()); // Serialization of values
         return kafkaProps;
     }
 
