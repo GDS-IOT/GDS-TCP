@@ -11,6 +11,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.log4j.Logger;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.Future;
 
@@ -42,7 +44,7 @@ public class KafkaHandler implements GDSHandler {
         String systemId = getSystemId(data);
         GDSData gdsData = new GDSData();
         gdsData.setGdsData(data);
-        gdsData.setTs(String.valueOf(System.currentTimeMillis()));
+        gdsData.setTs(getCurrentTs());
         LOGGER.debug("systemId ".concat(systemId));
         ProducerRecord record = new ProducerRecord(
                 gdsUtils.getGDSProperty(GDSConstants.KAFKA_TOPIC_NAME),
@@ -77,4 +79,9 @@ public class KafkaHandler implements GDSHandler {
         stringBuilder.setLength(0);
         return systemId;
     }
+
+    private String getCurrentTs(){
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    }
+
 }
