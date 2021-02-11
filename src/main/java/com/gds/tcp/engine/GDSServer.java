@@ -2,6 +2,7 @@ package com.gds.tcp.engine;
 
 import com.gds.tcp.engine.exception.GDSException;
 import com.gds.tcp.engine.netty.GDSServerInitializer;
+import com.gds.tcp.engine.scheduler.EventsScheduler;
 import com.gds.tcp.engine.utils.GDSUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -13,6 +14,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+
+import java.util.Timer;
 
 /**
  * @author Sujith Ramanathan
@@ -45,6 +48,8 @@ public class GDSServer {
                     .childHandler(new GDSServerInitializer())
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
+
+            executeScheduledTasks();
             logger.debug("Server started @ port " + port);
             bootstrap.bind(port).sync().channel().closeFuture().sync();
 
@@ -72,6 +77,13 @@ public class GDSServer {
             throw new GDSException("Port number should be an Integer");
         }
         new GDSServer(port).run();
+    }
+
+    private void executeScheduledTasks(){
+        Timer timer = new Timer();
+        EventsScheduler eventsScheduler = new EventsScheduler();
+        timer.schedule(eventsScheduler, 0, 1000);
+        logger.debug("Scheduled tasks triggered");
     }
 
 }
