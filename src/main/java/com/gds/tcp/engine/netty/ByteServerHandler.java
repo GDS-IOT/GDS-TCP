@@ -2,6 +2,7 @@ package com.gds.tcp.engine.netty;
 
 import com.gds.tcp.engine.service.CommandHandler;
 import com.gds.tcp.engine.service.MessageHandler;
+import com.gds.tcp.engine.utils.McuStaticCommands;
 import org.apache.log4j.Logger;
 
 import io.netty.channel.Channel;
@@ -18,8 +19,6 @@ import io.netty.util.concurrent.GlobalEventExecutor;
  */
 public class ByteServerHandler extends ChannelInboundHandlerAdapter {
 
-    private static final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-
     private static final Logger logger = Logger.getLogger(ByteServerHandler.class);
 
     @Override
@@ -29,14 +28,14 @@ public class ByteServerHandler extends ChannelInboundHandlerAdapter {
 //		for(Channel channel : channels) {
 //			channel.write("[SERVER] - "+ incoming.remoteAddress() + " has joined ");
 //		}
-        channels.add(incoming);
+        GDSNettyChannelGroup.getInstance().add(incoming);
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         logger.debug("Handler Gonna removed");
         Channel channelToRemove = ctx.channel();
-        channels.remove(channelToRemove);
+        GDSNettyChannelGroup.getInstance().remove(channelToRemove);
     }
 
     @Override
