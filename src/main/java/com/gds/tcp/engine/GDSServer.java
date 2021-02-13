@@ -49,7 +49,7 @@ public class GDSServer {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
 
-            executeScheduledTasks();
+//            executeScheduledTasks();
             logger.debug("Server started @ port " + port);
             bootstrap.bind(port).sync().channel().closeFuture().sync();
 
