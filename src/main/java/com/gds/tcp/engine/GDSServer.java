@@ -82,7 +82,7 @@ public class GDSServer {
     private void executeScheduledTasks(){
         Timer timer = new Timer();
         EventsScheduler eventsScheduler = new EventsScheduler();
-        timer.schedule(eventsScheduler, 0, 1000);
+        timer.schedule(eventsScheduler, 0, (1000 * 300));
         logger.debug("Scheduled tasks triggered");
     }
 
