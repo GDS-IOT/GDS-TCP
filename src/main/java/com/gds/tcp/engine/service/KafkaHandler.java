@@ -4,6 +4,7 @@ import com.gds.domain.GDSData;
 import com.gds.tcp.engine.constants.GDSConstants;
 import com.gds.tcp.engine.utils.GDSSerializer;
 import com.gds.tcp.engine.utils.GDSUtils;
+import io.netty.channel.Channel;
 import org.apache.kafka.clients.Metadata;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -26,10 +27,13 @@ public class KafkaHandler implements GDSHandler {
 
     private GDSUtils gdsUtils;
 
+    private GDSHandler rfIdHandler;
+
     private Producer<String, ByteArraySerializer> producer;
 
     private KafkaHandler() {
         gdsUtils = GDSUtils.getInstance();
+        rfIdHandler = RFDeviceMappingHandlerImpl.getInstance();
         initKafkaProducer();
     }
 
@@ -38,9 +42,8 @@ public class KafkaHandler implements GDSHandler {
     }
 
     @Override
-    public void handleNext(Object rawData) {
+    public void handleNext(byte []data, Channel channel) {
         LOGGER.debug("Sending message to Kafka");
-        byte[] data = (byte[]) rawData;
         String systemId = getSystemId(data);
         GDSData gdsData = new GDSData();
         gdsData.setGdsData(data);
@@ -53,6 +56,7 @@ public class KafkaHandler implements GDSHandler {
                 );
         Future<Metadata> futureMedatata = this.producer.send(record);
         while(!futureMedatata.isDone()){}
+        rfIdHandler.handleNext(data, channel);
     }
 
     private void initKafkaProducer() {

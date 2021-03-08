@@ -1,5 +1,6 @@
 package com.gds.tcp.engine.service;
 
+import io.netty.channel.Channel;
 import org.apache.log4j.Logger;
 
 public class MessageHandler implements GDSHandler {
@@ -10,10 +11,12 @@ public class MessageHandler implements GDSHandler {
 
     private static final StringBuilder message = new StringBuilder();
 
-    private GDSHandler nextHandler;
+    private GDSHandler kafkaHandler;
+    private GDSHandler rfHandler;
 
     private MessageHandler() {
-        nextHandler = KafkaHandler.getInstance();
+        kafkaHandler = KafkaHandler.getInstance();
+        rfHandler = RFDeviceCommandHandlerImpl.getInstance();
     }
 
     public static MessageHandler getInstance() {
@@ -26,19 +29,24 @@ public class MessageHandler implements GDSHandler {
         return instance;
     }
 
-    public void handleNext(Object data) {
-        if (data instanceof byte[]) {
-            byte []rawData = (byte[]) data;
-            printRawData(rawData);
-            nextHandler.handleNext(data);
-        } else if (data instanceof String) {
-            LOGGER.debug("Message received from Kafka ".concat((String)data));
+    public void handleNext(byte[] data, Channel channel) {
+        printRawData(data);
+        kafkaHandler.handleNext(data, channel);
+    }
+
+    private void sendToRespectiveHandler(byte[] data, Channel channel) {
+        if (data[0] != -1) {
+            LOGGER.debug("Event Received from Device");
+            kafkaHandler.handleNext(data, channel);
+        } else {
+            LOGGER.debug("Event Received from API Component");
+            rfHandler.handleNext(data, channel);
         }
     }
 
-    private void printRawData(byte []data){
-        for(byte b : data){
-            message.append((int)b).append(", ");
+    private void printRawData(byte[] data) {
+        for (byte b : data) {
+            message.append((int) b).append(", ");
         }
         LOGGER.debug("Message received from device ".concat(message.toString()));
         message.setLength(0);
