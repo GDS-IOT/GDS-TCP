@@ -41,6 +41,7 @@ public class MessageHandler implements GDSHandler {
         } else {
             LOGGER.debug("Event Received from API Component");
             rfHandler.handleNext(data, channel);
+            channel.writeAndFlush("success");
         }
     }
 
