@@ -1,21 +1,14 @@
 package com.gds.tcp.engine.netty;
 
-import com.gds.tcp.engine.service.CommandHandler;
 import com.gds.tcp.engine.service.MessageHandler;
-import com.gds.tcp.engine.utils.McuStaticCommands;
 import org.apache.log4j.Logger;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.concurrent.GlobalEventExecutor;
 
 /**
- *
  * @author Sujith Ramanathan
- *
  */
 public class ByteServerHandler extends ChannelInboundHandlerAdapter {
 
@@ -25,9 +18,6 @@ public class ByteServerHandler extends ChannelInboundHandlerAdapter {
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         logger.debug("Handler Added");
         Channel incoming = ctx.channel();
-//		for(Channel channel : channels) {
-//			channel.write("[SERVER] - "+ incoming.remoteAddress() + " has joined ");
-//		}
         GDSNettyChannelGroup.getInstance().add(incoming);
     }
 
@@ -40,15 +30,18 @@ public class ByteServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.debug("Exception occurred ",cause);
+        logger.debug("Exception occurred ", cause);
     }
 
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.debug("Message Received");
-        MessageHandler.getInstance().handleNext(msg);
-        logger.debug("Sent response");
+        if (msg instanceof byte[]) {
+            MessageHandler.getInstance().handleNext((byte[]) msg, ctx.channel());
+            logger.debug("Message Processed");
+        } else
+            logger.debug("The received message is not type of byte[]");
     }
 
 //    @Override

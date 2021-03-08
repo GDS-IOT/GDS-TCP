@@ -3,10 +3,9 @@ package com.gds.tcp.engine.scheduler;
 
 
 import com.gds.tcp.engine.netty.GDSNettyChannelGroup;
-import com.gds.tcp.engine.utils.McuStaticCommands;
+import com.gds.tcp.engine.utils.McuCommandGenerator;
 import org.apache.log4j.Logger;
 
-import java.awt.*;
 import java.util.TimerTask;
 
 /**
@@ -24,7 +23,7 @@ public class EventsScheduler extends TimerTask {
 
     @Override
     public void run() {
-        channelGroup.sendEventsToAll(McuStaticCommands.getInstance().getStaticMcuCommand());
+        channelGroup.sendEventsToAll(McuCommandGenerator.getInstance().getStaticMcuCommand());
     }
 
 }
