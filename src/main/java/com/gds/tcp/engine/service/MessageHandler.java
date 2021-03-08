@@ -31,7 +31,7 @@ public class MessageHandler implements GDSHandler {
 
     public void handleNext(byte[] data, Channel channel) {
         printRawData(data);
-        kafkaHandler.handleNext(data, channel);
+        sendToRespectiveHandler(data, channel);
     }
 
     private void sendToRespectiveHandler(byte[] data, Channel channel) {
