@@ -31,7 +31,7 @@ public class GDSConstants {
 
     public static final String DEVICE_ACTION_SERIAL_DATA = "device_action_serial_data";
 
-    public static final String SERIAL_DATA_LOC = "serialdata_location";
+    public static final String SERIAL_DATA_INDEX = "serialdata_location";
 
     public static final String SERIAL_DATA_VALUE = "serialdata_value";
 
