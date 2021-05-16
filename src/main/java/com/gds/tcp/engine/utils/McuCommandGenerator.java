@@ -22,10 +22,7 @@ public class McuCommandGenerator {
 
     public byte[] getRespectiveCommand(JSONObject payload) {
         String eventId = (String) payload.get(GDSConstants.EVENT_ID_KEY);
-        if (GDSConstants.MOTOR_STATUS_EVENT_ID.equals(eventId)) {
-            return motorCommand.getMotorCommand(payload);
-        }
-        return null;
+        return motorCommand.getMotorCommand(payload);
     }
 
     public byte[] getStaticMcuCommand() {
