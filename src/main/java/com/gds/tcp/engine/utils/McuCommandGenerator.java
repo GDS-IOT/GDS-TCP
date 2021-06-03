@@ -1,6 +1,6 @@
 package com.gds.tcp.engine.utils;
 
-import com.gds.tcp.engine.command.MotorStatusCommand;
+import com.gds.tcp.engine.command.RFCommandGenerator;
 import com.gds.tcp.engine.constants.GDSConstants;
 import org.json.simple.JSONObject;
 
@@ -11,7 +11,7 @@ public class McuCommandGenerator {
 
     private static final McuCommandGenerator instance = new McuCommandGenerator();
 
-    private MotorStatusCommand motorCommand = MotorStatusCommand.getInstance();
+    private RFCommandGenerator motorCommand = RFCommandGenerator.getInstance();
 
     private McuCommandGenerator() {
     }
@@ -22,7 +22,7 @@ public class McuCommandGenerator {
 
     public byte[] getRespectiveCommand(JSONObject payload) {
         String eventId = (String) payload.get(GDSConstants.EVENT_ID_KEY);
-        return motorCommand.getMotorCommand(payload);
+        return motorCommand.getEdgeCommand(payload);
     }
 
     public byte[] getStaticMcuCommand() {

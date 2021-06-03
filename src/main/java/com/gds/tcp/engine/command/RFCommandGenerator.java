@@ -4,42 +4,34 @@ import com.gds.tcp.engine.constants.GDSConstants;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import java.io.ByteArrayOutputStream;
-import java.sql.SQLOutput;
 
 /**
  * @author Sujith Ramanathan
  */
-public class MotorStatusCommand {
+public class RFCommandGenerator {
 
-    private static final MotorStatusCommand instance = new MotorStatusCommand();
+    private static final RFCommandGenerator instance = new RFCommandGenerator();
 
-    private static final Logger LOGGER = Logger.getLogger(MotorStatusCommand.class);
+    private static final Logger LOGGER = Logger.getLogger(RFCommandGenerator.class);
 
     private static final int PACKET_SIZE = 70;
 
-    public static MotorStatusCommand getInstance() {
+    public static RFCommandGenerator getInstance() {
         return instance;
     }
 
-    public byte[] getMotorCommand(JSONObject json) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    public byte[] getEdgeCommand(JSONObject json) {
         StringBuilder builder = new StringBuilder();
         byte[] data = new byte[PACKET_SIZE];
 
-        baos.write(PACKET_SIZE);
+        data = createEdgeData(json, data, builder);
 
-        data = createMotorData(json, data, builder);
-        fillBytesAsZero(baos);
-
-        System.out.println(builder.toString());
-//        byte[] data = baos.toByteArray();
         return data;
     }
 
-    private byte[] createMotorData(JSONObject json, byte[] rawData, StringBuilder builder) {
+    private byte[] createEdgeData(JSONObject json, byte[] rawData, StringBuilder builder) {
         String packetSizeValue = String.valueOf(PACKET_SIZE);
         rawData[0] = (byte) packetSizeValue.charAt(0);
         rawData[1] = (byte) packetSizeValue.charAt(1);
