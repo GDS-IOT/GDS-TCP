@@ -1,5 +1,6 @@
 package com.gds.tcp.engine.service;
 
+import com.gds.tcp.engine.converter.AsciiToByteConverter;
 import io.netty.channel.Channel;
 import org.apache.log4j.Logger;
 
@@ -37,6 +38,7 @@ public class MessageHandler implements GDSHandler {
     private void sendToRespectiveHandler(byte[] data, Channel channel) {
         if (data[0] != -1) {
             LOGGER.debug("Event Received from Device");
+            data = AsciiToByteConverter.getInstance().convertToAnalyticsData(data);
             kafkaHandler.handleNext(data, channel);
         } else {
             LOGGER.debug("Event Received from API Component");
