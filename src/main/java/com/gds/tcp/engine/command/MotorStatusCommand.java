@@ -18,7 +18,7 @@ public class MotorStatusCommand {
 
     private static final Logger LOGGER = Logger.getLogger(MotorStatusCommand.class);
 
-    private static final int PACKET_SIZE = 35;
+    private static final int PACKET_SIZE = 70;
 
     public static MotorStatusCommand getInstance() {
         return instance;
@@ -30,7 +30,6 @@ public class MotorStatusCommand {
         byte[] data = new byte[PACKET_SIZE];
 
         baos.write(PACKET_SIZE);
-        builder.append(PACKET_SIZE).append(" - ");
 
         data = createMotorData(json, data, builder);
         fillBytesAsZero(baos);
@@ -41,42 +40,50 @@ public class MotorStatusCommand {
     }
 
     private byte[] createMotorData(JSONObject json, byte[] rawData, StringBuilder builder) {
-        rawData[0] = PACKET_SIZE;
+        String packetSizeValue = String.valueOf(PACKET_SIZE);
+        rawData[0] = (byte) packetSizeValue.charAt(0);
+        rawData[1] = (byte) packetSizeValue.charAt(1);
+        builder.append(rawData[0]).append(" - ").append(rawData[1]).append(" - ");
         try {
-            int index = 1;
+            int index = 2;
             String deviceId = (String) json.get(GDSConstants.DEVICE_ID_KEY);
-            index = writeStringIntoByte(deviceId.split(GDSConstants.GDS_ID_DELIMITER), rawData, builder, index);
+            index = writeCharIntoByte(deviceId.split(GDSConstants.GDS_ID_DELIMITER), rawData, builder, index);
 
             // Device Type
             String deviceCategory = (String) json.get(GDSConstants.DEVICE_CATEGORY_KEY);
-            index = writeStringIntoByte(deviceCategory.split(GDSConstants.GDS_ID_DELIMITER), rawData, builder, index);
+            index = writeCharIntoByte(deviceCategory.split(GDSConstants.GDS_ID_DELIMITER), rawData, builder, index);
 
             // Command Number
-            rawData[index] = 1;
-            builder.append("1").append(" - ");
+            rawData[index] = '0';
+            index++;
+            rawData[index] = '1';
+            builder.append("0").append(" - ").append(1).append(" - ");
             index++;
 
             // Packet Type
-            int packetType = convertToInt((String) json.get(GDSConstants.PACKET_TYPE_KEY));
-            rawData[index] = (byte) packetType;
-            index++;
-            builder.append(packetType).append(" - ");
+            index = writeCharIntoByte(((String) json.get(GDSConstants.PACKET_TYPE_KEY)).split(""), rawData, builder, index);
+
 
             // Serial Data
             JSONArray serialDataArr = (JSONArray) json.get(GDSConstants.DEVICE_ACTION_SERIAL_DATA);
             int serialDataIndex;
             String serialDataValue;
             JSONObject indexAndValue;
+            boolean isFirstElement = true;
             for (Object serialLocData : serialDataArr) {
                 indexAndValue = (JSONObject) serialLocData;
                 serialDataIndex = convertToInt((String) indexAndValue.get((GDSConstants.SERIAL_DATA_INDEX)));
                 serialDataValue = (String) indexAndValue.get(GDSConstants.SERIAL_DATA_VALUE);
 
-                rawData[serialDataIndex] = (byte) convertToInt(serialDataValue);
-                index++;
-
-                builder.append("serial_data_loc = ").append(serialDataIndex).append(" ");
-                builder.append(serialDataValue).append(" - ");
+//                rawData[serialDataIndex] = (byte) convertToInt(serialDataValue);
+//                index++;
+                if(isFirstElement){
+                    isFirstElement = false;
+                }else if(!isFirstElement){
+                    serialDataIndex = index + 1;
+                }
+                builder.append("serial_data_loc = ").append(serialDataIndex).append(" - ");
+                index = writeCharIntoByte(serialDataValue.split(""), rawData, builder, serialDataIndex);
             }
             LOGGER.debug("Payload sending to device ".concat(builder.toString()));
         } catch (Exception e) {
@@ -90,6 +97,35 @@ public class MotorStatusCommand {
             int val = convertToInt(s);
             rawData[index] = (byte) val;
             builder.append(val).append(" - ");
+            index++;
+        }
+        return index;
+    }
+
+    private int writeCharIntoByte(String[] data, byte[] rawData, StringBuilder builder, int index) {
+        int stringLength;
+        for (String s : data) {
+            stringLength = s.length();
+            if (stringLength > 1) {
+                index = appendChar(s, index, rawData, stringLength, builder);
+            }else if (stringLength <= 1){
+                rawData[index] = '0';
+                index++;
+                builder.append(0).append(" - ");
+                rawData[index] = (byte) s.charAt(0);
+                builder.append(rawData[index]).append(" - ");
+                index++;
+            }
+        }
+        return index;
+    }
+
+    private int appendChar(String value, int index, byte[] data, int stringLength, StringBuilder builder) {
+        char ch;
+        for (int i = 0; i < stringLength; i++) {
+            ch = value.charAt(i);
+            data[index] = (byte) ch;
+            builder.append(ch).append(" - ");
             index++;
         }
         return index;
