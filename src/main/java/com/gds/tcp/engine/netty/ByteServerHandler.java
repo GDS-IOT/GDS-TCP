@@ -30,7 +30,8 @@ public class ByteServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.debug("Exception occurred ", cause);
+        cause.printStackTrace();
+        logger.error("Exception occurred ", cause);
     }
 
 
