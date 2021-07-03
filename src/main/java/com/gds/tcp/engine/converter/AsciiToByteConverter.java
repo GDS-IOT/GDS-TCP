@@ -70,7 +70,7 @@ public class AsciiToByteConverter {
         idx = setData(rawData, data, idx, 37,38);
 
         // Remaining data
-        setData(rawData, data, idx, 39,70);
+        setData(rawData, data, idx, 39,68);
 
         for (byte b : data) {
             builder.append((int) b).append(" - ");
