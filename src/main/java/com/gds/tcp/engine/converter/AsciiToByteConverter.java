@@ -24,13 +24,9 @@ public class AsciiToByteConverter {
 
     public byte[] convertToAnalyticsData(byte[] rawData) {
         byte[] data = new byte[35];
-        rawData = new byte[70];
-        String value = "700113740001137527";
-        for (int i = 0; i < value.length(); i++) {
-            rawData[i] = (byte) value.charAt(i);
-        }
 
-        System.out.println(new String(rawData));
+        LOGGER.debug(builder.append("RawData -- ").append(new String(rawData)).toString());
+        builder.setLength(0);
 
         // Total number of bytes
         data[0]=35;
