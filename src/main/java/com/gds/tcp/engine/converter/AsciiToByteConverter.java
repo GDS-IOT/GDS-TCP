@@ -63,10 +63,10 @@ public class AsciiToByteConverter {
         idx = setData(rawData, data, idx, 34,35);
 
         // Event Id
-        idx = setData(rawData, data, idx, 37,38);
+        idx = setData(rawData, data, idx, 36,37);
 
         // Remaining data
-        setData(rawData, data, idx, 39,68);
+        setData(rawData, data, idx, 38,68);
 
         for (byte b : data) {
             builder.append((int) b).append(" - ");
