@@ -5,8 +5,6 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-
 /**
  * @author Sujith Ramanathan
  */
@@ -35,7 +33,7 @@ public class RFCommandGenerator {
         String packetSizeValue = String.valueOf(PACKET_SIZE);
         rawData[0] = (byte) packetSizeValue.charAt(0);
         rawData[1] = (byte) packetSizeValue.charAt(1);
-        builder.append(rawData[0]).append(" - ").append(rawData[1]).append(" - ");
+        builder.append((char) rawData[0]).append(" - ").append((char) rawData[1]).append(" - ");
         try {
             int index = 2;
             String deviceId = (String) json.get(GDSConstants.DEVICE_ID_KEY);
@@ -69,14 +67,15 @@ public class RFCommandGenerator {
 
 //                rawData[serialDataIndex] = (byte) convertToInt(serialDataValue);
 //                index++;
-                if(isFirstElement){
+                if (isFirstElement) {
                     isFirstElement = false;
-                }else if(!isFirstElement){
+                } else if (!isFirstElement) {
                     serialDataIndex = index + 1;
                 }
                 builder.append("serial_data_loc = ").append(serialDataIndex).append(" - ");
                 index = writeCharIntoByte(serialDataValue.split(""), rawData, builder, serialDataIndex);
             }
+            fillBytesAsZero(index, rawData, builder);
             LOGGER.debug("Payload sending to device ".concat(builder.toString()));
         } catch (Exception e) {
             LOGGER.error("Generic Error occurred while writing into baos ", e);
@@ -100,12 +99,12 @@ public class RFCommandGenerator {
             stringLength = s.length();
             if (stringLength > 1) {
                 index = appendChar(s, index, rawData, stringLength, builder);
-            }else if (stringLength <= 1){
+            } else if (stringLength <= 1) {
                 rawData[index] = '0';
                 index++;
                 builder.append(0).append(" - ");
                 rawData[index] = (byte) s.charAt(0);
-                builder.append(rawData[index]).append(" - ");
+                builder.append((char) rawData[index]).append(" - ");
                 index++;
             }
         }
@@ -127,13 +126,14 @@ public class RFCommandGenerator {
         return Integer.parseInt(data);
     }
 
-    private void fillBytesAsZero(ByteArrayOutputStream baos) {
-        byte[] data = baos.toByteArray();
-        for (int i = data.length; i < PACKET_SIZE; i++) {
-            baos.write(0);
+    private void fillBytesAsZero(int index, byte[] rawData, StringBuilder builder) {
+        char _0 = '0';
+        for (int i = index; i < PACKET_SIZE; i++) {
+            rawData[i] = (byte) _0;
+            builder.append(_0).append(" - ");
         }
     }
-
+//
 //    public static void main(String[] args) throws Exception {
 //
 //        String msg = "{\n" +
@@ -176,9 +176,9 @@ public class RFCommandGenerator {
 //                "}";
 //        JSONParser parser = new JSONParser();
 //
-//        byte[] data = getInstance().getMotorCommand((JSONObject) parser.parse(msg));
+//        byte[] data = getInstance().getEdgeCommand((JSONObject) parser.parse(msg));
 //        for (byte b : data) {
-//            System.out.println(b);
+//            System.out.println((char)b);
 //        }
 //    }
 }
