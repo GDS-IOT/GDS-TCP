@@ -4,9 +4,6 @@ import com.gds.tcp.engine.constants.GDSConstants;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.io.ByteArrayOutputStream;
 
 /**
  * @author Sujith Ramanathan
