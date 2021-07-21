@@ -4,6 +4,7 @@ import com.gds.tcp.engine.constants.GDSConstants;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 /**
  * @author Sujith Ramanathan
@@ -43,6 +44,7 @@ public class RFCommandGenerator {
             String deviceCategory = (String) json.get(GDSConstants.DEVICE_CATEGORY_KEY);
             index = writeCharIntoByte(deviceCategory.split(GDSConstants.GDS_ID_DELIMITER), rawData, builder, index);
 
+
             // Command Number
             rawData[index] = '0';
             index++;
@@ -51,8 +53,13 @@ public class RFCommandGenerator {
             index++;
 
             // Packet Type
-            index = writeCharIntoByte(((String) json.get(GDSConstants.PACKET_TYPE_KEY)).split(""), rawData, builder, index);
+            String packetType = ((String) json.get(GDSConstants.PACKET_TYPE_KEY));
+            index = writeStringIntoByte(packetType, rawData, packetType.length(), builder, index);
 
+//            byte []testData = new byte[10];
+//            System.out.println(((String) json.get(GDSConstants.PACKET_TYPE_KEY)));
+//            writeCharIntoByte(((String) json.get(GDSConstants.PACKET_TYPE_KEY)).split(""), testData, builder, index);
+//            rawData = testData;
 
             // Serial Data
             JSONArray serialDataArr = (JSONArray) json.get(GDSConstants.DEVICE_ACTION_SERIAL_DATA);
@@ -73,7 +80,7 @@ public class RFCommandGenerator {
                     serialDataIndex = index + 1;
                 }
                 builder.append("serial_data_loc = ").append(serialDataIndex).append(" - ");
-                index = writeCharIntoByte(serialDataValue.split(""), rawData, builder, serialDataIndex);
+                index = writeStringIntoByte(serialDataValue, rawData, serialDataValue.length(), builder, index);
             }
             fillBytesAsZero(index, rawData, builder);
             LOGGER.debug("Payload sending to device ".concat(builder.toString()));
@@ -91,6 +98,10 @@ public class RFCommandGenerator {
             index++;
         }
         return index;
+    }
+
+    private int writeStringIntoByte(String data, byte[] rawData, int stringLenth, StringBuilder builder, int index) {
+        return appendChar(data, index, rawData, stringLenth, builder);
     }
 
     private int writeCharIntoByte(String[] data, byte[] rawData, StringBuilder builder, int index) {
@@ -175,10 +186,14 @@ public class RFCommandGenerator {
 //                "]\n" +
 //                "}";
 //        JSONParser parser = new JSONParser();
-//
+//        RFCommandGenerator rfCommandGenerator = new RFCommandGenerator();
 //        byte[] data = getInstance().getEdgeCommand((JSONObject) parser.parse(msg));
+//        rfCommandGenerator.printValues(data);
+//    }
+//
+//    private void printValues(byte[] data) {
 //        for (byte b : data) {
-//            System.out.println((char)b);
+//            System.out.println((char) b);
 //        }
 //    }
 }
