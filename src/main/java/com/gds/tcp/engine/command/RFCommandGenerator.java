@@ -15,7 +15,7 @@ public class RFCommandGenerator {
 
     private static final Logger LOGGER = Logger.getLogger(RFCommandGenerator.class);
 
-    private static final int PACKET_SIZE = 70;
+    private static final int PACKET_SIZE = 40;
 
     public static RFCommandGenerator getInstance() {
         return instance;
